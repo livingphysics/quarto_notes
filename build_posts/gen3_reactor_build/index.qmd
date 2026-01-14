@@ -1,0 +1,19 @@
+---
+title: "First Generation Bioreactor Build Note"
+author: 
+ - name: David Jordan
+   url: mailto:public@livingphysics.org
+code-fold: true
+date: "2025-12-02"
+categories: [Builds, Bioreactor]
+bibliography: references.bib
+csl: ../styles/american-physical-society.csl
+draft: true
+feed:
+    image-height: 60
+    image-width: 60
+---
+# Overview
+
+# PWM Control of LED output
+The maximum continuous forward current for the LED should not exceed 100mA.  Based on the Femtobuck voltage to current graph, this corresponds to around 1.0V.  For the PWM signal 1 = DUTY*3.3, so the maximum duty cycle of for the PWM pin controlling the LED should be 30. 
