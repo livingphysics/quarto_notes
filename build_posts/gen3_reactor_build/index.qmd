@@ -1,10 +1,10 @@
 ---
-title: "First Generation Bioreactor Build Note"
+title: "Third Generation Bioreactor Build Note"
 author: 
  - name: David Jordan
    url: mailto:public@livingphysics.org
 code-fold: true
-date: "2025-12-02"
+date: "2026-03-24"
 categories: [Builds, Bioreactor]
 bibliography: references.bib
 csl: ../styles/american-physical-society.csl
@@ -14,6 +14,43 @@ feed:
     image-width: 60
 ---
 # Overview
+The bioreactor has been redesigned as single modular units instead of the four bioreactor units that I was designing before. This is to facilitate individual temperature and gas control and in anticipation of building networked ecosystems of bioreactors. In addition the software was rewritten and now includes sensors that can measure gas composition (CO2 and O2 currently).  A gas control system has been built that can run the bioreactors in controlled, elevated carbon dioxide $(<10\%)$ environments by mixing CO2 and air in different proportions.  Finally, a pumping system than can support up to 8 pumps has been integrated, and a two pump system (feed/waste) has been programmed with a turbidostat mode that tracks growth rate in real time using an estimator based on the extended Kalman filter [-@Hoffmann2017-po].
+
+![Bioreactor v3](images/bioreactor_V3.png)
+
+# Mounting
+Bioreactors are now mounted between two sets of construction rails. One set of 60 mm long 15 mm diameter [Makerbeam](https://www.makerbeam.com/) construction rails sits between the bioreactor temperature control block and the fan that controls the stirring. In the space between the temperature control block and the fan, a LED ring light in a custom designed acrylic case provides a stable base for the vial and illuminates the vial from below.
+
+# Improved Temperature Control System
+An improved temperature control system was designed and constructed. The temperature control system consists of the same DS18B20 thermometer, but the liquid cooling system has been replaced with a solid-state Peltier element cooling system driven by a [Cytron motor driver](https://thepihut.com/products/13amp-6v-30v-dc-motor-driver) and a custom machined aluminium block that sits around the lower 20mm of the vial. The block is designed to enclose as much of the vial as possible leaving room above for the optics above.  The aluminum block was designed to be twenty millimeters deep but to accommodate a 40mm Peltier element. This was designed in Autodesk Fusion and machined by [eMachineShop](https://www.emachineshop.com/). Temperature measurements for the PID controller take place in a hole at the front of the aluminium block and with the [DS18B20](https://thepihut.com/products/ds18b20-digital-temperature-sensor-extras) temperature probe placed in contact with the glass vial. The [Pioreactor base](https://www.printables.com/model/863347-pioreactor-20ml-v11-printable-parts/files) was modified to create a custom base plate that attached to the aluminium block via M3x4mm screws.  The CAD file for this can be found [here]().  This facilitates connecting the Pioreactor optics sleeve to the aluminium block. 
+
+![Temperature Control Module - the improved temperature control module](images/temp_module.png)
 
 # PWM Control of LED output
-The maximum continuous forward current for the LED should not exceed 100mA.  Based on the Femtobuck voltage to current graph, this corresponds to around 1.0V.  For the PWM signal 1 = DUTY*3.3, so the maximum duty cycle of for the PWM pin controlling the LED should be 30. 
+The maximum continuous forward current for the LED should not exceed 100mA. A $1k\Omega$ pull-down resistor from the CTRL pin to ground was added to prevent voltage spikes that were burning out the Femtobuck. This combination gives much more flexibility for the infrared LED control, as output is no longer fixed at 75,A but can be adjusted.  The pull-down resistors prevents the over-voltage spikes that were burning out previous boards. Based on the Femtobuck voltage to current graph, this corresponds to around 1.0V.  For the PWM signal 1 = DUTY*3.3, so the maximum duty cycle of for the PWM pin controlling the LED should be 30%. For our custom OP380 Amplifier circuit, we found the optimal IR intensity to be 15%, while for the Pioreactor [Eye-Spy](https://pioreactor.com/products/eye-spy-replacement-part) system, this was 8%. Optimal in this case was defined by sweeping the LED intensity from zero to twenty percent for both a blank and a dense culture and looking at the intensity for which the difference was maximal. 
+
+# Gas composition sensors
+Gas composition can now also be monitored and recorded. The two gases included in this update are carbon dioxide (CO2) and oxygen (O2). The gas sensor used for oxygen is and [Atlas scientific](https://atlas-scientific.com/) gas sensor, and for CO2 is either an Atlas sensor (up to 10,000ppm/1%) or a [Sensair](https://www.digikey.co.uk/en/products/detail/senseair/033-9-0023/13536026) K33 (up to 100,000ppm/10%).  Both sensors have an I2C mode, which is used via the [atlas_i2c](https://github.com/timboring/atlas_i2c) library and custom python library I wrote for the Sensair based on their communication specification.  This [library](https://github.com/livingphysics/bioreactor_v3/blob/main/hardware_testing/sensair_k33.py) can be found in the bioreactor_v3 repository in the hardware support directory. A custom 3D printed adapter was designed to couple the 24-400 threaded vial to the NPT 3/4 threaded Atlas sensors.  The CAD file for this can be found [here]().
+
+# Gas control system
+Using 
+
+# Minor improvements
+Similar to the  $1k\Omega$ pull-down resistor for the Femtobuck control pin, a $1k\Omega$ pull-down resistor was also added to the fan control PWM pin. 
+
+# Detailed Assembly Instructions
+1. Tap 4 corner holes on both sides fo the [aluminium vial heat block]() using an M3 tap.
+2. Connect the Peltier element red-wire to V+ and the black-wire to Gnd.  Feel which side gets cold, this is usually the printed side.  Attach this side to te aluminium block using thermally conductive double-sided tape (or another conductive adhesive) 
+3.  Connect the other side of the Peltier in the same manner to the aluminum heat-sink fan combination.
+4. Connect 8 M3x8mm screws with hex-nuts through the holes in the Noctua fan.  The hex-nuts should be on the top and bottom sides of the fan.  Connect the Open-beam 15x15 construction rail to the fan with the fan cable coming out the front fo the construct, the 60mm rail on top and (open side) and the 90mm rail on the bottom.
+5. Affix the magnets to the fan with 3M adhesive tape. 
+6. Half screw 4 M3x6mm screws into the bottom the of the aluminium vial heat block and slide it onto the top (60mm) construction rail. 
+7. Affix the Cytron motor driver to the heat-sink fan using 3M double sided adhesive with the screw terminals to the right side. Attach the red peltier wire to the ma terminal and the black to the mb terminal.
+8. Attach the Pioreactor sleeve to the custom adaptor and then attach the adaptor to the aluminium block with 4 m3x4mm screws ensuring the LED and PD holes are to the left side.
+9.  Remove the male connector cable from the ring light with snips. Thread the female end connector through the hole in the custom acrylic holder.  Affix the spacers on either side of the ring light and then affix the final piece on the top. Slide this into the slot between the upper construction rails. Solder the male connector leads to Red:5V, Black:Ground, and Blue:MOSI pin on the Pi.
+10.  Solder the 40 pin connector to the perma-proto board with the notch on the left side
+11. Solder 6 pin connectors and headers for the ADS1115 ADC, and a 4-pin header with the top 2 pins overlapping pins 20 and 21 of the Raspberry Pi, and connect, the fourth pin to ground. 
+12. Connect the control pin to pin 25 of the Raspberry Pi and also to ground via a 1kOhm resistor. Connect VIN:12V and PGND:Ground.
+13. Solder SDA and SCL pins from the Pi and the ADS1115 together, and solder Vin:5v and Gnd:Ground.
+14. Solder 2 4-pin male headers for the fan control and thermistor.  Connect Pin 1 (blue) to ground and to pin 12 on the Pi.
+15. Solder the V+ terminal of the DS18B20 (3) to the yellow wire of the spare extension cable from the fan with the female header cut off. Solder th ground pin (1) to the black wire, and the signal pin (2) to the blue wire. 

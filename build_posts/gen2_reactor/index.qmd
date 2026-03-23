@@ -112,4 +112,3 @@ plt.show()
 ## Pump Calibration {#pump_calibration}
 Pump calibration was carried out by measuring flow rates using an RS232 connected digital scale from [Kern](https://uk.rs-online.com/web/p/weighing-scales/2753858?gb=s) with a 0.001g resolution. Data was read using the pyserial function in Python.  Calibration is done by running each pump at a defined step rate for a fixed time, weighing the water before and after with the connected scale, and converting the change in mass (grams) to volume. The software repeats this several times, records the step rate, run duration, and measured flow rate (ml/s) into a CSV file, and then uses linear regression and plotting utilities to build a calibration curve that maps step rates to actual flow rates for each pump and direction.
 
-## Temperature Controller {#temp_calibration}

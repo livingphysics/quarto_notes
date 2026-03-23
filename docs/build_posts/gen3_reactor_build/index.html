@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="David Jordan">
+<meta name="dcterms.date" content="2026-03-24">
 
-<title>Build Notes – Notebooks</title>
+<title>Third Generation Bioreactor Build Note – Notebooks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +22,47 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2ec1ecde4794cf0ca2676fdbadd3167b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2ec1ecde4794cf0ca2676fdbadd3167b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,35 +90,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
+<meta name="quarto:status" content="draft">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -130,19 +122,19 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="Notebooks" href="builds.xml" data-external="1"></head>
+<link rel="stylesheet" href="../../styles.css">
+</head>
 
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     </a>
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Notebooks</span>
     </a>
   </div>
@@ -153,23 +145,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Notes Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./tech.html"> 
+    <a class="nav-link" href="../../tech.html"> 
 <span class="menu-text">Technical Notes</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./builds.html" aria-current="page"> 
+    <a class="nav-link" href="../../builds.html"> 
 <span class="menu-text">Build Notes</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./results.html"> 
+    <a class="nav-link" href="../../results.html"> 
 <span class="menu-text">Results Notes</span></a>
   </li>  
   <li class="nav-item">
@@ -178,7 +170,7 @@ window.Quarto = {
 <span class="menu-text">Main Site</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text">RSS Feed</span></a>
   </li>  
@@ -192,204 +184,131 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Build Notes</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Third Generation Bioreactor Build Note</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Builds</div>
+                <div class="quarto-category">Bioreactor</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="mailto:public@livingphysics.org">David Jordan</a> </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 24, 2026</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="QmlvcmVhY3Rvcg==">Bioreactor <span class="quarto-category-count">(3)</span></div><div class="category" data-category="QnVpbGRz">Builds <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Tm90ZXM=">Notes <span class="quarto-category-count">(2)</span></div><div class="category" data-category="WWVhc3Q=">Yeast <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#mounting" id="toc-mounting" class="nav-link" data-scroll-target="#mounting">Mounting</a></li>
+  <li><a href="#improved-temperature-control-system" id="toc-improved-temperature-control-system" class="nav-link" data-scroll-target="#improved-temperature-control-system">Improved Temperature Control System</a></li>
+  <li><a href="#pwm-control-of-led-output" id="toc-pwm-control-of-led-output" class="nav-link" data-scroll-target="#pwm-control-of-led-output">PWM Control of LED output</a></li>
+  <li><a href="#gas-composition-sensors" id="toc-gas-composition-sensors" class="nav-link" data-scroll-target="#gas-composition-sensors">Gas composition sensors</a></li>
+  <li><a href="#gas-control-system" id="toc-gas-control-system" class="nav-link" data-scroll-target="#gas-control-system">Gas control system</a></li>
+  <li><a href="#minor-improvements" id="toc-minor-improvements" class="nav-link" data-scroll-target="#minor-improvements">Minor improvements</a></li>
+  <li><a href="#detailed-assembly-instructions" id="toc-detailed-assembly-instructions" class="nav-link" data-scroll-target="#detailed-assembly-instructions">Detailed Assembly Instructions</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-
-
-
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="QnVpbGRzJTJDQmlvcmVhY3Rvcg==" data-listing-date-sort="1757343600000" data-listing-file-modified-sort="1760537212831" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1609">
-<div class="thumbnail"><a href="./build_posts/gen2_reactor/index.html" class="no-external">
-
-<p class="card-img-top"><img src="build_posts/gen2_reactor/images/Bioreactor_v2.jpeg"  class="thumbnail-image card-img"/></p>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./build_posts/gen2_reactor/index.html" class="no-external">Second Generation Bioreactor Build</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('QnVpbGRz'); return false;">Builds</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('QmlvcmVhY3Rvcg=='); return false;">Bioreactor</div>
-
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p>The bioreactor has been redesigned as single modular units instead of the four bioreactor units that I was designing before. This is to facilitate individual temperature and gas control and in anticipation of building networked ecosystems of bioreactors. In addition the software was rewritten and now includes sensors that can measure gas composition (CO2 and O2 currently). A gas control system has been built that can run the bioreactors in controlled, elevated carbon dioxide <span class="math inline">\((&lt;10\%)\)</span> environments by mixing CO2 and air in different proportions. Finally, a pumping system than can support up to 8 pumps has been integrated, and a two pump system (feed/waste) has been programmed with a turbidostat mode that tracks growth rate in real time using an estimator based on the extended Kalman filter <span class="citation" data-cites="Hoffmann2017-po">&nbsp;[<a href="#ref-Hoffmann2017-po" role="doc-biblioref">1</a>]</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/bioreactor_V3.png" class="img-fluid figure-img"></p>
+<figcaption>Bioreactor v3</figcaption>
+</figure>
 </div>
-<div class="delink listing-description"><a href="./build_posts/gen2_reactor/index.html" class="no-external">
-This note outlines the build of our second generation bioreactor. This version of the bioreactor includes Temperature Control and a Pump System for exchanging media. It can…
-</a></div>
+</section>
+<section id="mounting" class="level1">
+<h1>Mounting</h1>
+<p>Bioreactors are now mounted between two sets of construction rails. One set of 60 mm long 15 mm diameter <a href="https://www.makerbeam.com/">Makerbeam</a> construction rails sits between the bioreactor temperature control block and the fan that controls the stirring. In the space between the temperature control block and the fan, a LED ring light in a custom designed acrylic case provides a stable base for the vial and illuminates the vial from below.</p>
+</section>
+<section id="improved-temperature-control-system" class="level1">
+<h1>Improved Temperature Control System</h1>
+<p>An improved temperature control system was designed and constructed. The temperature control system consists of the same DS18B20 thermometer, but the liquid cooling system has been replaced with a solid-state Peltier element cooling system driven by a <a href="https://thepihut.com/products/13amp-6v-30v-dc-motor-driver">Cytron motor driver</a> and a custom machined aluminium block that sits around the lower 20mm of the vial. The block is designed to enclose as much of the vial as possible leaving room above for the optics above. The aluminum block was designed to be twenty millimeters deep but to accommodate a 40mm Peltier element. This was designed in Autodesk Fusion and machined by <a href="https://www.emachineshop.com/">eMachineShop</a>. Temperature measurements for the PID controller take place in a hole at the front of the aluminium block and with the <a href="https://thepihut.com/products/ds18b20-digital-temperature-sensor-extras">DS18B20</a> temperature probe placed in contact with the glass vial. The <a href="https://www.printables.com/model/863347-pioreactor-20ml-v11-printable-parts/files">Pioreactor base</a> was modified to create a custom base plate that attached to the aluminium block via M3x4mm screws. The CAD file for this can be found <a href="">here</a>. This facilitates connecting the Pioreactor optics sleeve to the aluminium block.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/temp_module.png" class="img-fluid figure-img"></p>
+<figcaption>Temperature Control Module - the improved temperature control module</figcaption>
+</figure>
 </div>
-<div class="metadata">
-<a href="./build_posts/gen2_reactor/index.html" class="no-external">
-<div class="listing-date">
-Sep 9, 2025
-</div>
-<div class="listing-author">
-David Jordan, Somsubhro Bagchi
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="QnVpbGRzJTJDTm90ZXMlMkNZZWFzdA==" data-listing-date-sort="1740668400000" data-listing-file-modified-sort="1759161477336" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4212">
-<div class="thumbnail"><a href="./build_posts/gal-his_yeast_build/index.html" class="no-external">
+</section>
+<section id="pwm-control-of-led-output" class="level1">
+<h1>PWM Control of LED output</h1>
+<p>The maximum continuous forward current for the LED should not exceed 100mA. A <span class="math inline">\(1k\Omega\)</span> pull-down resistor from the CTRL pin to ground was added to prevent voltage spikes that were burning out the Femtobuck. This combination gives much more flexibility for the infrared LED control, as output is no longer fixed at 75,A but can be adjusted. The pull-down resistors prevents the over-voltage spikes that were burning out previous boards. Based on the Femtobuck voltage to current graph, this corresponds to around 1.0V. For the PWM signal 1 = DUTY*3.3, so the maximum duty cycle of for the PWM pin controlling the LED should be 30%. For our custom OP380 Amplifier circuit, we found the optimal IR intensity to be 15%, while for the Pioreactor <a href="https://pioreactor.com/products/eye-spy-replacement-part">Eye-Spy</a> system, this was 8%. Optimal in this case was defined by sweeping the LED intensity from zero to twenty percent for both a blank and a dense culture and looking at the intensity for which the difference was maximal.</p>
+</section>
+<section id="gas-composition-sensors" class="level1">
+<h1>Gas composition sensors</h1>
+<p>Gas composition can now also be monitored and recorded. The two gases included in this update are carbon dioxide (CO2) and oxygen (O2). The gas sensor used for oxygen is and <a href="https://atlas-scientific.com/">Atlas scientific</a> gas sensor, and for CO2 is either an Atlas sensor (up to 10,000ppm/1%) or a <a href="https://www.digikey.co.uk/en/products/detail/senseair/033-9-0023/13536026">Sensair</a> K33 (up to 100,000ppm/10%). Both sensors have an I2C mode, which is used via the <a href="https://github.com/timboring/atlas_i2c">atlas_i2c</a> library and custom python library I wrote for the Sensair based on their communication specification. This <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/hardware_testing/sensair_k33.py">library</a> can be found in the bioreactor_v3 repository in the hardware support directory. A custom 3D printed adapter was designed to couple the 24-400 threaded vial to the NPT 3/4 threaded Atlas sensors. The CAD file for this can be found <a href="">here</a>.</p>
+</section>
+<section id="gas-control-system" class="level1">
+<h1>Gas control system</h1>
+<p>Using</p>
+</section>
+<section id="minor-improvements" class="level1">
+<h1>Minor improvements</h1>
+<p>Similar to the <span class="math inline">\(1k\Omega\)</span> pull-down resistor for the Femtobuck control pin, a <span class="math inline">\(1k\Omega\)</span> pull-down resistor was also added to the fan control PWM pin.</p>
+</section>
+<section id="detailed-assembly-instructions" class="level1">
+<h1>Detailed Assembly Instructions</h1>
+<ol type="1">
+<li>Tap 4 corner holes on both sides fo the <a href="">aluminium vial heat block</a> using an M3 tap.</li>
+<li>Connect the Peltier element red-wire to V+ and the black-wire to Gnd. Feel which side gets cold, this is usually the printed side. Attach this side to te aluminium block using thermally conductive double-sided tape (or another conductive adhesive)</li>
+<li>Connect the other side of the Peltier in the same manner to the aluminum heat-sink fan combination.</li>
+<li>Connect 8 M3x8mm screws with hex-nuts through the holes in the Noctua fan. The hex-nuts should be on the top and bottom sides of the fan. Connect the Open-beam 15x15 construction rail to the fan with the fan cable coming out the front fo the construct, the 60mm rail on top and (open side) and the 90mm rail on the bottom.</li>
+<li>Affix the magnets to the fan with 3M adhesive tape.</li>
+<li>Half screw 4 M3x6mm screws into the bottom the of the aluminium vial heat block and slide it onto the top (60mm) construction rail.</li>
+<li>Affix the Cytron motor driver to the heat-sink fan using 3M double sided adhesive with the screw terminals to the right side. Attach the red peltier wire to the ma terminal and the black to the mb terminal.</li>
+<li>Attach the Pioreactor sleeve to the custom adaptor and then attach the adaptor to the aluminium block with 4 m3x4mm screws ensuring the LED and PD holes are to the left side.</li>
+<li>Remove the male connector cable from the ring light with snips. Thread the female end connector through the hole in the custom acrylic holder. Affix the spacers on either side of the ring light and then affix the final piece on the top. Slide this into the slot between the upper construction rails. Solder the male connector leads to Red:5V, Black:Ground, and Blue:MOSI pin on the Pi.</li>
+<li>Solder the 40 pin connector to the perma-proto board with the notch on the left side</li>
+<li>Solder 6 pin connectors and headers for the ADS1115 ADC, and a 4-pin header with the top 2 pins overlapping pins 20 and 21 of the Raspberry Pi, and connect, the fourth pin to ground.</li>
+<li>Connect the control pin to pin 25 of the Raspberry Pi and also to ground via a 1kOhm resistor. Connect VIN:12V and PGND:Ground.</li>
+<li>Solder SDA and SCL pins from the Pi and the ADS1115 together, and solder Vin:5v and Gnd:Ground.</li>
+<li>Solder 2 4-pin male headers for the fan control and thermistor. Connect Pin 1 (blue) to ground and to pin 12 on the Pi.</li>
+<li>Solder the V+ terminal of the DS18B20 (3) to the yellow wire of the spare extension cable from the fan with the female header cut off. Solder th ground pin (1) to the black wire, and the signal pin (2) to the blue wire.</li>
+</ol>
 
-<img loading="lazy" src="./build_posts/gal-his_yeast_build/images/Project_Image002_ch00.jpg" class="thumbnail-image">
 
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./build_posts/gal-his_yeast_build/index.html" class="no-external">Recreating the Gal-His yeast system used to demonstrate adaptive reprogramming</a>
-</h3>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('QnVpbGRz'); return false;">Builds</div>
+</section>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Tm90ZXM='); return false;">Notes</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('WWVhc3Q='); return false;">Yeast</div>
-
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Hoffmann2017-po" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">S. A. Hoffmann, C. Wohltat, K. M. Müller, and K. M. Arndt, <em>A User-Friendly, Low-Cost Turbidostat with Versatile Growth Rate Estimation Based on an Extended Kalman Filter</em>, PLoS One <strong>12</strong>, e0181923 (2017).</div>
 </div>
-<div class="delink listing-description"><a href="./build_posts/gal-his_yeast_build/index.html" class="no-external">
-A goal for the future would be to determine the extent of knowledge the cell has of itself and how it uses that knowledge in a thoughtful manner when challenged.
-</a></div>
-</div>
-<div class="metadata">
-<a href="./build_posts/gal-his_yeast_build/index.html" class="no-external">
-<div class="listing-date">
-Feb 28, 2025
-</div>
-<div class="listing-author">
-David Jordan, Mihoko Tame
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="QnVpbGRzJTJDQmlvcmVhY3Rvcg==" data-listing-date-sort="1739804400000" data-listing-file-modified-sort="1759161073350" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="359">
-<div class="thumbnail"><a href="./build_posts/gen1_reactor_update_01/index.html" class="no-external">
-
-<p class="card-img-top"><img src="build_posts/gen1_reactor_update_01/images/opa380_amplifier.png"  class="thumbnail-image card-img"/></p>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./build_posts/gen1_reactor_update_01/index.html" class="no-external">First Generation Bioreactor Update</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('QnVpbGRz'); return false;">Builds</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('QmlvcmVhY3Rvcg=='); return false;">Bioreactor</div>
-
-</div>
-<div class="delink listing-description"><a href="./build_posts/gen1_reactor_update_01/index.html" class="no-external">
-This note describes an upgrade to the first generation bioreactor to increase the sensitivity and long-term reliability of the optical density measurements. The optical…
-</a></div>
-</div>
-<div class="metadata">
-<a href="./build_posts/gen1_reactor_update_01/index.html" class="no-external">
-<div class="listing-date">
-Feb 18, 2025
-</div>
-<div class="listing-author">
-David Jordan, Somsubhro Bagchi
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="QnVpbGRzJTJDTm90ZXM=" data-listing-date-sort="1726671600000" data-listing-file-modified-sort="1759161073342" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="915">
-<div class="thumbnail"><a href="./build_posts/quarto_blog_build/index.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./build_posts/quarto_blog_build/index.html" class="no-external">How I Built This Quarto Notes Site</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('QnVpbGRz'); return false;">Builds</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Tm90ZXM='); return false;">Notes</div>
-
-</div>
-<div class="delink listing-description"><a href="./build_posts/quarto_blog_build/index.html" class="no-external">
-This note describes how I set up and hosted this quarto notes site on the notes.x subdomain of my domain livingphysics.org. To do this I run quarto locally in Visual Studio…
-</a></div>
-</div>
-<div class="metadata">
-<a href="./build_posts/quarto_blog_build/index.html" class="no-external">
-<div class="listing-date">
-Sep 19, 2024
-</div>
-<div class="listing-author">
-David Jordan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="QnVpbGRzJTJDQmlvcmVhY3Rvcg==" data-listing-date-sort="1726585200000" data-listing-file-modified-sort="1759161585585" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1460">
-<div class="thumbnail"><a href="./build_posts/gen1_reactor_build/index.html" class="no-external">
-
-<img loading="lazy" src="./build_posts/gen1_reactor_build/images/bioreactor.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./build_posts/gen1_reactor_build/index.html" class="no-external">First Generation Bioreactor Build Note</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('QnVpbGRz'); return false;">Builds</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('QmlvcmVhY3Rvcg=='); return false;">Bioreactor</div>
-
-</div>
-<div class="delink listing-description"><a href="./build_posts/gen1_reactor_build/index.html" class="no-external">
-This note describes the design and construction of a RaspberryPi based 4-bioreactor system that has external illumination, external temperature recording, and magnetic…<span class="math inline"></span><span class="math inline"></span><span class="citation" data-cites="De_Jesus_Astacio2021-ld"></span>
-</a></div>
-</div>
-<div class="metadata">
-<a href="./build_posts/gen1_reactor_build/index.html" class="no-external">
-<div class="listing-date">
-Sep 18, 2024
-</div>
-<div class="listing-author">
-David Jordan, Michele Cespa
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
