@@ -11,6 +11,7 @@ date: "2025-09-09"
 categories: [Builds, Bioreactor]
 csl: ../styles/american-physical-society.csl
 draft: false
+jupyter: python3
 ---
 # Overview
 This note outlines the build of our second generation bioreactor.  This version of the bioreactor includes [Temperature Control](#temp_system) and a [Pump System](#pumps) for exchanging media.  It can be run as a batch reaction with the pumps tuned off, or as a [Turbidostat](#turbidostat_mode) or a [Chemostat](#chemostat_mode).  This is not a sealed system as in [Bioreactor_v1](../gen1_reactor_build/index.qmd) so there are no pressure measurements for this system.

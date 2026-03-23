@@ -5,3 +5,4 @@
 notes/.DS_Store
 /quarto_env/
 **/*.quarto_ipynb
+/.claude

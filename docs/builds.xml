@@ -99,7 +99,7 @@ The chemostat is designed so that the parameters of the culture (like growth rat
 <section id="temperature-control" class="level2">
 <h2 class="anchored" data-anchor-id="temperature-control">Temperature Control</h2>
 <p>Temperature control data can be pulled directly from the GitHub repository and plotted in-line with Quarto and Python. Here we show the temperature difference</p>
-<div id="34fd90ca" class="cell" data-execution_count="1">
+<div id="58218d3d" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -235,16 +235,13 @@ font-style: inherit;">0.5</span>)</span>
 <section id="pump_calibration" class="level2">
 <h2 class="anchored" data-anchor-id="pump_calibration">Pump Calibration</h2>
 <p>Pump calibration was carried out by measuring flow rates using an RS232 connected digital scale from <a href="https://uk.rs-online.com/web/p/weighing-scales/2753858?gb=s">Kern</a> with a 0.001g resolution. Data was read using the pyserial function in Python. Calibration is done by running each pump at a defined step rate for a fixed time, weighing the water before and after with the connected scale, and converting the change in mass (grams) to volume. The software repeats this several times, records the step rate, run duration, and measured flow rate (ml/s) into a CSV file, and then uses linear regression and plotting utilities to build a calibration curve that maps step rates to actual flow rates for each pump and direction.</p>
-</section>
-<section id="temp_calibration" class="level2">
-
 
 
 
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Temperature Controller</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-Hoffmann2017-po" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">S. A. Hoffmann, C. Wohltat, K. M. Müller, and K. M. Arndt, <em>A User-Friendly, Low-Cost Turbidostat with Versatile Growth Rate Estimation Based on an Extended Kalman Filter</em>, PLoS One <strong>12</strong>, e0181923 (2017).</div>
 </div>

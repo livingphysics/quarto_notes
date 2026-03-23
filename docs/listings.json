@@ -10,6 +10,12 @@
     ]
   },
   {
+    "listing": "/results.html",
+    "items": [
+      "/results_posts/cell_learning_2509/cell_learning_2509.html"
+    ]
+  },
+  {
     "listing": "/index.html",
     "items": [
       "/results_posts/cell_learning_2509/cell_learning_2509.html",
@@ -25,12 +31,6 @@
       "/tech_posts/proj_operator/proj_operator.html",
       "/tech_posts/gram_projection/gram_projection.html",
       "/tech_posts/sloppy_projection/sloppy_projection.html"
-    ]
-  },
-  {
-    "listing": "/results.html",
-    "items": [
-      "/results_posts/cell_learning_2509/cell_learning_2509.html"
     ]
   },
   {
