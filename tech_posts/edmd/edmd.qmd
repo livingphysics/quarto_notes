@@ -1,12 +1,15 @@
 ---
 title: "The Extended Dynamic Mode Decomposition"
-code-fold: true
-author: 
- - name: David Jordan
-   url: mailto:public@livingphysics.org
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2025-04-29"
-draft: true
 categories: ["Observable Functions", "Projection", "Koopman Operator", "EDMD"]
+code-fold: true
+draft: true
+feed:
+  image-height: 60
+  image-width: 60
 ---
 This is a note that outlines my own personal understanding of the DMD and EDMD methods in the context of observable function dynamics and projections. 
 

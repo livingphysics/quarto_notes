@@ -1,11 +1,15 @@
 ---
 title: "Projections and Basis Functions with Chemistry"
-code-fold: true
-author: 
- - name: David Jordan
-   url: mailto:public@livingphysics.org
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2025-02-19"
 categories: ["Observable Functions", "Projection Operators"]
+code-fold: true
+draft: false
+feed:
+  image-height: 60
+  image-width: 60
 ---
 This is a short note which connects how well chosen changes to the chemical kinetics in a simple system can manifest mathematically as either altering the projections onto a constant set of basis functions, or altering the basis functions while maintaining the projection. This note is intended to provide a very basic foundation for a more sophisticated model of learning and evolution in physical/chemical systems.
 

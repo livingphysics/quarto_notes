@@ -1,10 +1,16 @@
 ---
 title: "An interesting connection between sloppy model analysis and projection operators"
-code-fold: true
-jupyter: julia-1.11
-author: "David Jordan"
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-05-13"
 categories: ["Sloppy Models", "Projection Operators"]
+code-fold: true
+draft: false
+image: "thumbnail.png"
+feed:
+  image-height: 60
+  image-width: 60
 ---
 
 This note concerns various ways I have been thinking about basis functions with connections between some other fields I have been interested in, namely, projection operators, Koopman and Transfer operators, coordinate transformations, "sloppy model analysis", Hilbert spaces and Reproducing Kernel Hilbert spaces, and function approximation. 
@@ -84,6 +90,8 @@ coeffs = inv(V)*integrals
 plot!(p,t1,coeffs[1].+coeffs[2].*t1.+coeffs[3].*t1.^2,marker=(:circle, 5),label="Projection Operator")
 
 plot!(p, xlim=(0.0, 1.1))
+savefig(p, "thumbnail.png")
+p
 ```
 
  Now let us look at the the general Gram matrix in this case, we obtain the Hilbert matrix.  The fact that this matrix is ill conditioned means that the inverse greatly magnifies small differences in the input. 

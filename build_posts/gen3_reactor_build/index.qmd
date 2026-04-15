@@ -1,18 +1,20 @@
 ---
 title: "Third Generation Bioreactor Build Note"
-author: 
- - name: David Jordan
-   url: mailto:public@livingphysics.org
-code-fold: true
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2026-03-24"
 categories: [Builds, Bioreactor]
+code-fold: true
+draft: true
 bibliography: references.bib
 csl: ../styles/american-physical-society.csl
-draft: true
+image: "images/bioreactor_V3.png"
 feed:
-    image-height: 60
-    image-width: 60
+  image-height: 60
+  image-width: 60
 ---
+
 # Overview
 The bioreactor has been redesigned as single modular units instead of the four bioreactor units that I was designing before. This is to facilitate individual temperature and gas control and in anticipation of building networked ecosystems of bioreactors. In addition the software was rewritten and now includes sensors that can measure gas composition (CO2 and O2 currently).  A gas control system has been built that can run the bioreactors in controlled, elevated carbon dioxide $(<10\%)$ environments by mixing CO2 and air in different proportions.  Finally, a pumping system than can support up to 8 pumps has been integrated, and a two pump system (feed/waste) has been programmed with a turbidostat mode that tracks growth rate in real time using an estimator based on the extended Kalman filter [-@Hoffmann2017-po].
 

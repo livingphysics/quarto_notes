@@ -1,15 +1,17 @@
 ---
 title: "How I Built This Quarto Notes Site"
-author: ["David Jordan"]
-code-fold: true
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-09-19"
 categories: [Builds, Notes]
+code-fold: true
+draft: false
 bibliography: references.bib
 csl: ../styles/american-physical-society.csl
-draft: false
 feed:
-    image-height: 60
-    image-width: 60
+  image-height: 60
+  image-width: 60
 ---
 This note describes how I set up and hosted this quarto notes site on the notes.x subdomain of my domain [livingphysics.org](https://www.livingphysics.org).  To do this I run quarto locally in [Visual Studio Code](https://code.visualstudio.com) and serve the site using a [DigitalOcean](https://www.digitalocean.com) app with a custom domain that is managed by SquareSpace.  As of this writing (September '24) Digital Ocean allows you to create 3 free apps.  
 

@@ -1,10 +1,16 @@
 ---
 title: "TAI Note"
-code-fold: true
-jupyter: julia-1.11
-author: "David Jordan"
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-07-16"
 categories: [TAI]
+code-fold: true
+draft: false
+image: "thumbnail.png"
+feed:
+  image-height: 60
+  image-width: 60
 ---
 This note concerns the use of data transformations in calculations of the **Transcriptome Age Index** or TAI.  Here I argue that the TAI, when calculated as an expression weighted sum of phylostratigraphic indices is a vector projection and thus the length of the relative expression vector should be normalized to account for the fact that expression vectors are shorter when more genes are expressed.  Mathematically, the square root transform achieves this normalization because of a property of histograms (transforming an n-simplex into an n-sphere).
 
@@ -19,6 +25,9 @@ If we define the normalized expression $$n_i(s) = \frac{e_i(s)}{\sum_i^Ne_i(s)}$
 ```{julia}
 #| label: fig-simplex
 #| fig-cap: "2-Gene Simplex Plot"
+#| output: true
+#| fig-format: png
+#| echo: false
 using Plots
 
 vertices = [
@@ -64,7 +73,7 @@ exp_vec = [
 for v in exp_vec
     quiver!(p, [0], [0], quiver=([v[1]], [v[2]]), color=:red, linewidth=2, arrow=arrow(:closed, 0.1))
 end
-
+savefig(p, "thumbnail.png")
 display(p)
 ```
 This diagram depicts an example with 2 genes, in this case the possible normalized expression vectors are shown as the blue simplex, with 3 example expressions shown as the red vectors. A hypothetical phylostratum vector with gene age 1 for gene X and age 2 for gene Y is shown in purple, but this analysis does not depend on the particular form of $p_i$. What happens when we calculate the TAI for different possible normalized expression vectors along the simplex (blue)?  In general, the dot product can be calculated as $$\langle p_i,n_i(s) \rangle = \left\lVert p_i\right\rVert \left\lVert n_i(s)\right\rVert cos(\theta)$$

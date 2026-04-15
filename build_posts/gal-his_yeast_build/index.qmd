@@ -1,19 +1,19 @@
 ---
 title: "Recreating the Gal-His yeast system used to demonstrate adaptive reprogramming"
-author: 
- - name: David Jordan
-   url: mailto:public@livingphysics.org
- - name: Mihoko Tame
-code-fold: true
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
+  - name: Mihoko Tame
 date: "2025-02-28"
 categories: [Builds, Notes, Yeast]
+code-fold: true
+draft: false
 bibliography: references.bib
 csl: ../styles/american-physical-society.csl
-draft: false
 image: "images/Project_Image002_ch00.jpg"
 feed:
-    image-height: 60
-    image-width: 60
+  image-height: 60
+  image-width: 60
 ---
 
 > A goal for the future would be to determine the extent of

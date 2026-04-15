@@ -1,9 +1,15 @@
 ---
 title: "Projection in terms of the Gram Matrix"
-code-fold: true
-author: "David Jordan"
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-05-13"
 categories: ["Gram Matrix", "Projection Operators"]
+code-fold: true
+draft: false
+feed:
+  image-height: 60
+  image-width: 60
 ---
 This is a quick note showing how the optimal projection can be derived in terms of the inversion of the gram matrix used in the [note](../sloppy_projection/sloppy_projection.qmd) on the connection between sloppiness and projection.
 

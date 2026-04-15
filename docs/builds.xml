@@ -9,7 +9,7 @@
 <link>https://notes.livingphysics.org/builds.html</link>
 <atom:link href="https://notes.livingphysics.org/builds.xml" rel="self" type="application/rss+xml"/>
 <description>Notes from the living physics Lab</description>
-<generator>quarto-1.8.25</generator>
+<generator>quarto-1.9.36</generator>
 <lastBuildDate>Mon, 08 Sep 2025 23:00:00 GMT</lastBuildDate>
 <item>
   <title>Second Generation Bioreactor Build</title>
@@ -99,7 +99,7 @@ The chemostat is designed so that the parameters of the culture (like growth rat
 <section id="temperature-control" class="level2">
 <h2 class="anchored" data-anchor-id="temperature-control">Temperature Control</h2>
 <p>Temperature control data can be pulled directly from the GitHub repository and plotted in-line with Quarto and Python. Here we show the temperature difference</p>
-<div id="58218d3d" class="cell" data-execution_count="1">
+<div id="723bd01f" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -253,6 +253,7 @@ font-style: inherit;">0.5</span>)</span>
   <category>Bioreactor</category>
   <guid>https://notes.livingphysics.org/build_posts/gen2_reactor/</guid>
   <pubDate>Mon, 08 Sep 2025 23:00:00 GMT</pubDate>
+  <media:content url="https://notes.livingphysics.org/build_posts/gen2_reactor/images/Bioreactor_v2.jpeg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Recreating the Gal-His yeast system used to demonstrate adaptive reprogramming</title>
@@ -738,6 +739,7 @@ Store dry at room temperature.</p>
   <category>Bioreactor</category>
   <guid>https://notes.livingphysics.org/build_posts/gen1_reactor_update_01/</guid>
   <pubDate>Tue, 18 Feb 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://notes.livingphysics.org/build_posts/gen1_reactor_update_01/images/opa380_amplifier.png" medium="image" type="image/png" height="132" width="144"/>
 </item>
 <item>
   <title>How I Built This Quarto Notes Site</title>

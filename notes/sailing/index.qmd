@@ -1,9 +1,15 @@
 ---
 title: "Sailing Away"
-author: "David Jordan"
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-09-14"
 categories: [News]
+draft: false
 image: "boats.jpeg"
+feed:
+  image-height: 60
+  image-width: 60
 ---
 
 Recently I have started an independent research lab outside of (but adjacent to) academia. Upon hearing this, many people have commented: “that sounds like a lot of work”. It is and it isn’t, to steal a great analogy from [Adam Mastroianni](https://www.experimental-history.com/p/lets-build-a-fleet-and-change-the), setting out on a little sailboat of your own is a lot different than having a cabin on a (the) big ship. You need a lot of different skills, navigation, basic meteorology, how to tie knots, knowing what a jib is, how to fix the electronics, how to swim, etc. Comparatively, on the big ship, you need to learn how to get your food from the mess, how to get items delivered through the supply dock, how to convince the captain to take a little detour to see those cool birds over there, and how to impress the funders of the big ship when they come aboard to see what you’ve been doing.  The question of whether it is more or less work seems like the wrong question, so the wrong answer is “I feel like it’s more or less the same, possibly a bit more” but the right answer is, it’s completely different work, that at the end of the day makes me energized rather than drained. The connection between the work and the freedom is direct and that is invigorating. I was worried when I started out that “sailing the boat” would take too much time away from doing the actual research. When I started my goal was to spend 95% of my time doing the research, in the first months, I can’t claim to have met that, maybe I spend 90% of my time, but I am also spending more time overall and am enjoying it immensely. It’s true that a little boat can’t go everywhere. The big boat has engines and GPS, it can go almost anywhere it wants to (but not anywhere *you* want to). Your sailboat is subject to the winds and seas, and sometimes these can’t take you where you want to go. If you want to go roughly where the big ship is headed the big ship can be a great choice! But if your the type that feels like taking out a sailboat sounds a lot better than getting a cabin on a cruise ship, but you don’t know anything about reading the wind or navigating by the stars, reach and I’d be more than happy to “show you the ropes”.

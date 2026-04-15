@@ -1,16 +1,19 @@
 ---
 title: "First Generation Bioreactor Build Note"
-author: ["David Jordan", "Michele Cespa"]
-code-fold: true
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
+  - name: Michele Cespa
 date: "2024-09-18"
 categories: [Builds, Bioreactor]
+code-fold: true
+draft: false
 bibliography: references.bib
 csl: ../styles/american-physical-society.csl
-draft: false
 image: "images/bioreactor.png"
 feed:
-    image-height: 60
-    image-width: 60
+  image-height: 60
+  image-width: 60
 ---
 # Overview
 This note describes the design and construction of a RaspberryPi based 4-bioreactor system that has external illumination, external temperature recording, and magnetic stirring. The system monitors internal temperature and pressure using the BME280 series sensor and monitors turbidity via Infrared absorbance ($180^{\circ}$ ) and scattering ($135^{\circ}$).  This system is based on the sealed long-term ecosystems designed by the Kuehn Lab[-@De_Jesus_Astacio2021-ld]. 

@@ -1,79 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://notes.livingphysics.org/builds.html</loc>
-    <lastmod>2024-09-18T12:24:45.596Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/results_posts/cell_learning_2509/cell_learning_2509.html</loc>
-    <lastmod>2025-10-15T14:06:52.969Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/build_posts/quarto_blog_build/index.html</loc>
-    <lastmod>2025-09-29T15:51:13.342Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/build_posts/gal-his_yeast_build/index.html</loc>
-    <lastmod>2025-09-29T15:57:57.336Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/build_posts/gen1_reactor_update_01/index.html</loc>
-    <lastmod>2025-09-29T15:51:13.350Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/about.html</loc>
-    <lastmod>2024-09-11T09:35:20.429Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/results.html</loc>
-    <lastmod>2025-10-15T14:06:52.914Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/tech_posts/observable_chem/observable__chem.html</loc>
-    <lastmod>2025-10-15T14:06:52.971Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/tech_posts/sloppy_projection/sloppy_projection.html</loc>
-    <lastmod>2025-10-15T14:06:52.971Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/tech_posts/observable__dynamics/observable__dynamics.html</loc>
-    <lastmod>2025-10-15T14:06:52.971Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/tech_posts/gram_projection/gram_projection.html</loc>
-    <lastmod>2025-10-15T14:06:52.970Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/tech_posts/TAI/TAI.html</loc>
-    <lastmod>2025-02-19T12:43:34.000Z</lastmod>
-  </url>
-  <url>
-    <loc>https://notes.livingphysics.org/tech_posts/proj_operator/proj_operator.html</loc>
-    <lastmod>2025-02-19T13:27:22.705Z</lastmod>
+    <loc>https://notes.livingphysics.org/tech.html</loc>
+    <lastmod>2026-04-15T21:08:40.333Z</lastmod>
   </url>
   <url>
     <loc>https://notes.livingphysics.org/index.html</loc>
-    <lastmod>2025-10-15T14:06:52.914Z</lastmod>
+    <lastmod>2026-04-15T21:08:40.332Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/about.html</loc>
+    <lastmod>2026-04-15T21:08:40.325Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/tech_posts/proj_operator/proj_operator.html</loc>
+    <lastmod>2026-04-15T22:11:49.609Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/tech_posts/observable__dynamics/observable__dynamics.html</loc>
+    <lastmod>2026-04-15T22:12:28.802Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/results_posts/cell_learning_2509/cell_learning_2509.html</loc>
+    <lastmod>2026-04-15T22:11:40.846Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/build_posts/quarto_blog_build/index.html</loc>
+    <lastmod>2026-04-15T22:12:15.268Z</lastmod>
   </url>
   <url>
     <loc>https://notes.livingphysics.org/build_posts/gen2_reactor/index.html</loc>
-    <lastmod>2026-03-23T16:34:34.021Z</lastmod>
+    <lastmod>2026-04-15T22:12:05.074Z</lastmod>
   </url>
   <url>
     <loc>https://notes.livingphysics.org/build_posts/gen1_reactor_build/index.html</loc>
-    <lastmod>2025-09-29T15:59:45.585Z</lastmod>
+    <lastmod>2026-04-15T22:11:57.776Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/build_posts/gal-his_yeast_build/index.html</loc>
+    <lastmod>2026-04-15T22:12:12.733Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/build_posts/gen1_reactor_update_01/index.html</loc>
+    <lastmod>2026-04-15T22:12:01.612Z</lastmod>
   </url>
   <url>
     <loc>https://notes.livingphysics.org/notes/sailing/index.html</loc>
-    <lastmod>2024-09-18T12:27:50.193Z</lastmod>
+    <lastmod>2026-04-15T22:12:33.919Z</lastmod>
   </url>
   <url>
-    <loc>https://notes.livingphysics.org/tech.html</loc>
-    <lastmod>2024-09-14T18:36:32.706Z</lastmod>
+    <loc>https://notes.livingphysics.org/tech_posts/TAI/TAI.html</loc>
+    <lastmod>2026-04-15T22:11:39.130Z</lastmod>
   </url>
   <url>
-    <loc>https://notes.livingphysics.org/build_posts/gen3_reactor_build/index.html</loc>
-    <lastmod>2026-04-15T20:23:50.904Z</lastmod>
+    <loc>https://notes.livingphysics.org/tech_posts/gram_projection/gram_projection.html</loc>
+    <lastmod>2026-04-15T22:12:26.245Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/tech_posts/observable_chem/observable__chem.html</loc>
+    <lastmod>2026-04-15T22:12:32.377Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/tech_posts/sloppy_projection/sloppy_projection.html</loc>
+    <lastmod>2026-04-15T22:11:39.087Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/builds.html</loc>
+    <lastmod>2026-04-15T21:08:40.332Z</lastmod>
+  </url>
+  <url>
+    <loc>https://notes.livingphysics.org/results.html</loc>
+    <lastmod>2026-04-15T21:08:40.332Z</lastmod>
   </url>
 </urlset>

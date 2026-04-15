@@ -1,15 +1,18 @@
 ---
 title: "Initial Cell Learning Results"
-code-fold: true
-jupyter: julia-1.11
-author: 
- - name: David Jordan
-   url: mailto:public@livingphysics.org
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2025-09-29"
+categories: ["Cell Learning", "Results", "Adaptation"]
+code-fold: true
 draft: false
 bibliography: references.bib
 csl: ../styles/american-physical-society.csl
-categories: ["Cell Learning", "Results", "Adaptation"]
+image: "thumbnail.png"
+feed:
+  image-height: 60
+  image-width: 60
 ---
 # Overview
 This note presents some initial cell learning results using the rewired ["Gal-His" yeast](../../build_posts/gal-his_yeast_build/index.qmd) previously constructed. In a variety of conditions, we can observe adaptation of the rewired strain.  When grown in galactose without leucine or histidine, the strain grows well, using galactose as its carbon source and making histidine using the His3 enzyme transcribed from the Gal1/10 promoter as well as leucine from the Leu2 gene transcribed from its native Leu2 promoter.  In addition the Gal promoter also drives expression of the green fluorescent protein (GFP). In galactose the yeast exhibit green fluorescence (with blue illumination).  Adaptation has been shown in two different types of assays.  Cells grown in liquid culture assay show a characteristic "double-logistic" growth curve when switched from galactose to glucose media without histidine or leucine (+gal-his-leu).  We observe this phenomena in cultures grown in both the v1 version of hte bioreactor and the v2 version.  Before adaptation, cells strongly express genes from the Gal promoter, as observed by strong GFP fluorescence. A few hours after switching into glucose, expression is undetectable by GFP fluorescence.  After adaptation, low levels of promoter activity can be detected, but not comparable to the levels under galactose induction.  In addition to the liquid culture assays, colonies were grown on plates and time-lapse photo micrographs were recorded.  These show the adaptation process as colonies initially repress the promoter, showing low GFP fluorescence, but later adapt and are able to de-repress the gal promoter in glucose conditions. 
@@ -112,6 +115,7 @@ final_plot = plot(plots_array...,
     size=(800, 900),
     theme=:dark)
 
+savefig(final_plot, "thumbnail.png")
 display(final_plot)
 ```
 

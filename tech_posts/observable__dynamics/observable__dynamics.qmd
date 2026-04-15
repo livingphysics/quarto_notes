@@ -1,9 +1,15 @@
 ---
 title: "Observable functions and their dynamics"
-code-fold: true
-author: "David Jordan"
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-06-24"
 categories: ["Observable Functions", "Projection Operators"]
+code-fold: true
+draft: false
+feed:
+  image-height: 60
+  image-width: 60
 ---
 In the previous note I concluded with these points about observable functions and projection, 
 

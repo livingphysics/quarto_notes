@@ -1,10 +1,16 @@
+jupyter:
+  python: /home/davidjordan/.venv/quarto/bin/python
+
+julia:
+  project: "."
+  
 project:
   type: website
   output-dir: docs
   preview:
     port: 4200
     browser: false
-    watch-inputs: false  # Add this
+    watch-inputs: true  # Add this
     navigate: false      # Add this
     
 website:
@@ -36,5 +42,6 @@ feed:
   image-width: 60
 execute:
   freeze: false
+
 editor:
   render-on-save: true

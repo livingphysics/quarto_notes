@@ -1,11 +1,16 @@
 ---
 title: "Introduction and Motivations for a Projection Operator Approach"
-code-fold: true
-jupyter: julia-1.11
-author: "David Jordan"
+author:
+  - name: David Jordan
+    url: mailto:public@livingphysics.org
 date: "2024-06-18"
 categories: ["Projection Operators", "Dynamical Closure"]
+code-fold: true
 draft: false
+image: "thumbnail.png"
+feed:
+  image-height: 60
+  image-width: 60
 ---
 This note introduces projection operators and their use in studying partially observed dynamical systems.  The concept of dynamical closure is introduced, which is equivalent to dynamics living on a "Koopman invariant subspace". The best introduction to this I feel is Chapter 8 of Zwanzig's Nonequilibrium Statistical Mechanics. I will do my best to reintroduce the important points in summary below. 
 
@@ -83,7 +88,7 @@ end
 for i in 1:n
     t = 0:0.1:5  # Using larger time steps for dashed lines
     projected = x0[1, i] * exp.(-λ * t)
-    plot!(t, projected, linestyle=:dash, linewidth=2, 
+    plot!(t, projected, linestyle=:dash, linewidth=2,
           label=i == 1 ? "Projected Dynamics" : "", color=i)
 end
 
@@ -96,6 +101,8 @@ z0 = inv(v) * x0
 plot!(framestyle=:box,
       fontsize=14,
       margin=5Plots.mm)
+savefig("thumbnail.png")
+current()
 ```
 
 Is there a more useful one dimensional projection of this two dimensional system?  What if we measured an *observable* function of $a$ and $b$?.  I will  present such a function here and show how I determined it later.  Assume for now that we first compute an observable of the system and then do a one dimensional projection onto this carefully chosen observable.  The observable function is given as 
