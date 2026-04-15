@@ -10,7 +10,7 @@
 <atom:link href="https://notes.livingphysics.org/builds.xml" rel="self" type="application/rss+xml"/>
 <description>Notes from the living physics Lab</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Mon, 08 Sep 2025 15:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 08 Sep 2025 23:00:00 GMT</lastBuildDate>
 <item>
   <title>Second Generation Bioreactor Build</title>
   <dc:creator>David Jordan</dc:creator>
@@ -252,7 +252,7 @@ font-style: inherit;">0.5</span>)</span>
   <category>Builds</category>
   <category>Bioreactor</category>
   <guid>https://notes.livingphysics.org/build_posts/gen2_reactor/</guid>
-  <pubDate>Mon, 08 Sep 2025 15:00:00 GMT</pubDate>
+  <pubDate>Mon, 08 Sep 2025 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Recreating the Gal-His yeast system used to demonstrate adaptive reprogramming</title>
@@ -690,7 +690,7 @@ Store dry at room temperature.</p>
   <category>Notes</category>
   <category>Yeast</category>
   <guid>https://notes.livingphysics.org/build_posts/gal-his_yeast_build/</guid>
-  <pubDate>Thu, 27 Feb 2025 15:00:00 GMT</pubDate>
+  <pubDate>Fri, 28 Feb 2025 00:00:00 GMT</pubDate>
   <media:content url="https://notes.livingphysics.org/build_posts/gal-his_yeast_build/images/Project_Image002_ch00.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -737,7 +737,7 @@ Store dry at room temperature.</p>
   <category>Builds</category>
   <category>Bioreactor</category>
   <guid>https://notes.livingphysics.org/build_posts/gen1_reactor_update_01/</guid>
-  <pubDate>Mon, 17 Feb 2025 15:00:00 GMT</pubDate>
+  <pubDate>Tue, 18 Feb 2025 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>How I Built This Quarto Notes Site</title>
@@ -823,7 +823,7 @@ notes   CNAME   ---         app_ip_address.ondigitalocean.app</code></pre>
   <category>Builds</category>
   <category>Notes</category>
   <guid>https://notes.livingphysics.org/build_posts/quarto_blog_build/</guid>
-  <pubDate>Wed, 18 Sep 2024 15:00:00 GMT</pubDate>
+  <pubDate>Wed, 18 Sep 2024 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>First Generation Bioreactor Build Note</title>
@@ -937,7 +937,7 @@ notes   CNAME   ---         app_ip_address.ondigitalocean.app</code></pre>
   <category>Builds</category>
   <category>Bioreactor</category>
   <guid>https://notes.livingphysics.org/build_posts/gen1_reactor_build/</guid>
-  <pubDate>Tue, 17 Sep 2024 15:00:00 GMT</pubDate>
+  <pubDate>Tue, 17 Sep 2024 23:00:00 GMT</pubDate>
   <media:content url="https://notes.livingphysics.org/build_posts/gen1_reactor_build/images/bioreactor.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 </channel>
