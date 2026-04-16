@@ -45,3 +45,5 @@ execute:
 
 editor:
   render-on-save: true
+
+draft-mode: unlinked

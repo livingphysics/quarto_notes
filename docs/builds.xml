@@ -10,7 +10,1515 @@
 <atom:link href="https://notes.livingphysics.org/builds.xml" rel="self" type="application/rss+xml"/>
 <description>Notes from the living physics Lab</description>
 <generator>quarto-1.9.36</generator>
-<lastBuildDate>Mon, 08 Sep 2025 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 15 Apr 2026 23:00:00 GMT</lastBuildDate>
+<item>
+  <title>Third Generation Bioreactor Build Note</title>
+  <dc:creator>David Jordan</dc:creator>
+  <link>https://notes.livingphysics.org/build_posts/gen3_reactor_build/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p>The bioreactor has been redesigned as single modular units instead of the four bioreactor units that I was designing before. This is to facilitate individual temperature and gas control and in anticipation of building networked ecosystems of bioreactors. In addition the software was rewritten and now includes sensors that can measure gas composition (CO2 and O2 currently). A gas control system has been built that can run the bioreactors in controlled, elevated carbon dioxide <img src="https://latex.codecogs.com/png.latex?(%3C10%5C%25)"> environments by mixing CO2 and air in different proportions. Finally, a pumping system than can support up to 8 pumps has been integrated, and a two pump system (feed/waste) has been programmed with a turbidostat mode that tracks growth rate in real time using an estimator based on the extended Kalman filter <span class="citation" data-cites="Hoffmann2017-po">&nbsp;[1]</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/images/bioreactor_v3.png" class="img-fluid figure-img"></p>
+<figcaption>Bioreactor v3</figcaption>
+</figure>
+</div>
+</section>
+<section id="mounting" class="level1">
+<h1>Mounting</h1>
+<p>Bioreactors are now mounted between two sets of construction rails. One set of 60 mm long 15 mm diameter <a href="https://www.makerbeam.com/">Makerbeam</a> construction rails sits between the bioreactor temperature control block and the fan that controls the stirring. In the space between the temperature control block and the fan, a LED ring light in a custom designed acrylic case provides a stable base for the vial and illuminates the vial from below.</p>
+</section>
+<section id="improved-temperature-control-system" class="level1">
+<h1>Improved Temperature Control System</h1>
+<p>An improved temperature control system was designed and constructed. The temperature control system consists of the same DS18B20 thermometer, but the liquid cooling system has been replaced with a solid-state Peltier element cooling system driven by a <a href="https://thepihut.com/products/13amp-6v-30v-dc-motor-driver">Cytron motor driver</a> and a custom machined aluminium block that sits around the lower 20mm of the vial. The block is designed to enclose as much of the vial as possible leaving room above for the optics above. The aluminum block was designed to be twenty millimeters deep but to accommodate a 40mm Peltier element. This was designed in Autodesk Fusion and machined by <a href="https://www.emachineshop.com/">eMachineShop</a>. Temperature measurements for the PID controller take place in a hole at the front of the aluminium block and with the <a href="https://thepihut.com/products/ds18b20-digital-temperature-sensor-extras">DS18B20</a> temperature probe placed in contact with the glass vial. The <a href="https://www.printables.com/model/863347-pioreactor-20ml-v11-printable-parts/files">Pioreactor base</a> was modified to create a custom base plate that attached to the aluminium block via M3x4mm screws. The CAD file for this can be found <a href="">here</a>. This facilitates connecting the Pioreactor optics sleeve to the aluminium block.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/images/temp_module.png" class="img-fluid figure-img"></p>
+<figcaption>Temperature Control Module - the improved temperature control module</figcaption>
+</figure>
+</div>
+<p>To characterise how quickly the Peltier block can move the vial between temperature setpoints, I used the <code>temperature_profile</code> schedule from the <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/examples/yeast_ekf.py"><code>yeast_ekf.py</code></a> EKF job that produced this dataset: 25 °C for the first 3 hours, then 27.5 °C for 3 hours, then 30 °C. That gives two commanded shifts — at 180 min and 360 min — and the figure below overlays the two transients aligned to the moment each setpoint was changed. Settling time is defined as the first time <img src="https://latex.codecogs.com/png.latex?%7CT%20-%20T_%7B%5Ctext%7Bset%7D%7D%7C"> enters and stays below a 0.1 °C band for at least 60 s.</p>
+<div id="cell-fig-temp-settling" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">CSV_URL <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://raw.githubusercontent.com/livingphysics/bioreactor_v3/"</span></span>
+<span id="cb1-6">           <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"main/src/bioreactor_data/bioreactor_data.csv"</span>)</span>
+<span id="cb1-7">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(CSV_URL)</span>
+<span id="cb1-8"></span>
+<span id="cb1-9">t_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'elapsed_time'</span>].values.astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60.0</span></span>
+<span id="cb1-10">T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'temperature_C'</span>].values.astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb1-11"></span>
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Setpoint schedule from examples/yeast_ekf.py (temperature_profile):</span></span>
+<span id="cb1-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   stage 1: 0 → 180 min  @ 25.0 °C</span></span>
+<span id="cb1-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   stage 2: 180 → 360 min @ 27.5 °C</span></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   stage 3: 360 min → end @ 30.0 °C</span></span>
+<span id="cb1-16">profile <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25.0</span>), (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">27.5</span>), (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">360.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30.0</span>)]</span>
+<span id="cb1-17">transitions <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [(profile[k][<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], profile[k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>][<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], profile[k][<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])</span>
+<span id="cb1-18">               <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> k <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(profile))]</span>
+<span id="cb1-19"></span>
+<span id="cb1-20">WINDOW_BEFORE <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.0</span></span>
+<span id="cb1-21">WINDOW_AFTER  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45.0</span></span>
+<span id="cb1-22">TOL <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span></span>
+<span id="cb1-23">HOLD <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span></span>
+<span id="cb1-24"></span>
+<span id="cb1-25">fig, ax_t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.5</span>))</span>
+<span id="cb1-26">colors <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#1976D2'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#D32F2F'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#388E3C'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#7B1FA2'</span>]</span>
+<span id="cb1-27"></span>
+<span id="cb1-28"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> k, (t0, T_before, T_after) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">enumerate</span>(transitions):</span>
+<span id="cb1-29">    mask <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (t_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> t0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> WINDOW_BEFORE) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> (t_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> t0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> WINDOW_AFTER)</span>
+<span id="cb1-30">    tt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t_min[mask] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> t0</span>
+<span id="cb1-31">    TT <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> T[mask]</span>
+<span id="cb1-32">    c <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> colors[k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(colors)]</span>
+<span id="cb1-33"></span>
+<span id="cb1-34">    err <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">abs</span>(TT <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> T_after)</span>
+<span id="cb1-35">    after <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb1-36">    tt_a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tt[after]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> err_a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> err[after]</span>
+<span id="cb1-37">    settle_t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.nan</span>
+<span id="cb1-38">    within <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> err_a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> TOL</span>
+<span id="cb1-39">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> j <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(tt_a)):</span>
+<span id="cb1-40">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> within[j]:</span>
+<span id="cb1-41">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb1-42">        j_end <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.searchsorted(tt_a, tt_a[j] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> HOLD)</span>
+<span id="cb1-43">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> j_end <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(tt_a) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">and</span> np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">all</span>(within[j:j_end]):</span>
+<span id="cb1-44">            settle_t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tt_a[j]</span>
+<span id="cb1-45">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">break</span></span>
+<span id="cb1-46"></span>
+<span id="cb1-47">    settle_txt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>settle_t<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.1f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> min'</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> np.isfinite(settle_t) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'—'</span></span>
+<span id="cb1-48">    label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>T_before<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.1f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> → </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>T_after<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.1f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> °C  (settle: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>settle_txt<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)'</span></span>
+<span id="cb1-49">    ax_t.plot(tt, TT, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>c, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>label)</span>
+<span id="cb1-50">    ax_t.axhline(T_before, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>c, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">':'</span>,  linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)</span>
+<span id="cb1-51">    ax_t.axhline(T_after,  color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>c, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>)</span>
+<span id="cb1-52">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> np.isfinite(settle_t):</span>
+<span id="cb1-53">        ax_t.axvline(settle_t, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>c, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)</span>
+<span id="cb1-54">        ax_t.plot(settle_t, T_after, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'o'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>c, markersize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>,</span>
+<span id="cb1-55">                  markeredgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'black'</span>, markeredgewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb1-56"></span>
+<span id="cb1-57">ax_t.axvline(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'grey'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb1-58">ax_t.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Time since setpoint shift (min)'</span>)</span>
+<span id="cb1-59">ax_t.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Temperature (°C)'</span>)</span>
+<span id="cb1-60">ax_t.legend(loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'lower right'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>)</span>
+<span id="cb1-61">ax_t.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb1-62"></span>
+<span id="cb1-63">plt.tight_layout()</span>
+<span id="cb1-64">plt.show()</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-temp-settling" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-temp-settling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/index_files/figure-html/fig-temp-settling-output-1.png" width="710" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-temp-settling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Temperature step-response of the Peltier control block extracted from the 9-hour run. Measured vial temperature is aligned to the moment each setpoint was changed; dotted/dashed horizontal lines mark the before/after setpoints, and the vertical marker shows the settling time (first time |T − T<img src="https://latex.codecogs.com/png.latex?_%7Bset%7D">| enters and stays below a 0.1 °C band for 60 s).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pwm-control-of-led-output" class="level1">
+<h1>PWM Control of LED output</h1>
+<p>The maximum continuous forward current for the LED should not exceed 100mA. A <img src="https://latex.codecogs.com/png.latex?1k%5COmega"> pull-down resistor from the CTRL pin to ground was added to prevent voltage spikes that were burning out the Femtobuck. This combination gives much more flexibility for the infrared LED control, as output is no longer fixed at 75,A but can be adjusted. The pull-down resistors prevents the over-voltage spikes that were burning out previous boards. Based on the Femtobuck voltage to current graph, this corresponds to around 1.0V. For the PWM signal 1 = DUTY*3.3, so the maximum duty cycle of for the PWM pin controlling the LED should be 30%. For our custom OP380 Amplifier circuit, we found the optimal IR intensity to be 15%, while for the Pioreactor <a href="https://pioreactor.com/products/eye-spy-replacement-part">Eye-Spy</a> system, this was 8%. Optimal in this case was defined by sweeping the LED intensity from zero to twenty percent for both a blank and a dense culture and looking at the intensity for which the difference was maximal. A GUI for doing a similar test can be found <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/hardware_testing/od_gui.py">here</a>.</p>
+</section>
+<section id="gas-composition-sensors" class="level1">
+<h1>Gas composition sensors</h1>
+<p>Gas composition can now also be monitored and recorded. The two gases included in this update are carbon dioxide (CO2) and oxygen (O2). The gas sensor used for oxygen is and <a href="https://atlas-scientific.com/">Atlas scientific</a> gas sensor, and for CO2 is either an Atlas sensor (up to 10,000ppm/1%) or a <a href="https://www.digikey.co.uk/en/products/detail/senseair/033-9-0023/13536026">Sensair</a> K33 (up to 100,000ppm/10%). Both sensors have an I2C mode, which is used via the <a href="https://github.com/timboring/atlas_i2c">atlas_i2c</a> library and custom python library I wrote for the Sensair based on their communication specification. This <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/hardware_testing/sensair_k33.py">library</a> can be found in the bioreactor_v3 repository in the hardware support directory. A custom 3D printed adapter was designed to couple the 24-400 threaded vial to the NPT 3/4 threaded Atlas sensors. The CAD file for the single sensor design can be found <a href="./files/AtlasCapSingle.stl">here</a> and for the double sensor hammerhead design can be found <a href="./files/Atlas-T-Cap.stl">here</a>.</p>
+<div id="fig-atlas-caps" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-atlas-caps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/images/Atlas Cap v7.png" class="img-fluid figure-img"></p>
+<figcaption>Single-sensor Atlas cap</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/images/Atlas-T-Cap v7.png" class="img-fluid figure-img"></p>
+<figcaption>Double-sensor Atlas T-cap (hammerhead)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-atlas-caps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Custom 3D-printed caps adapting 24-400 vial threads to NPT 3/4 Atlas gas sensors.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="gas-control-system" class="level1">
+<h1>Gas control system</h1>
+<p>The gas control system combines pure CO2 from an aquarium or Sodastream CO2 source with pressurized air from a 12V pump. These are the incoming gas from the CO2 canister is controlled by a 12V normally closed (NC) solenoid valve. The gases are mixed in a Vuyomua 300ml stainless steel reservoir and kept at approximately 2atm by periodic pressurization from the pump and CO2 injection from the canister to maintain the appropriate CO2 concentration. These are measured in the outflow of the reservoir before it enters the bioreactor and fed back to the CO2 injection duration.</p>
+<div id="fig-co2-control" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-co2-control-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/images/co2_control.png" class="img-fluid figure-img"></p>
+<figcaption>Gas Control System</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-co2-control-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: A CO2 setpoint can be maintained with a standard deviation of about 225ppm
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="pump-system" class="level1">
+<h1>Pump System</h1>
+<p>Each individual bioreactor now controls its own 2-pump system. The pump system consists of 2 <a href="https://www.amazon.co.uk/dp/B07RWNZDCR">stepper motor controlled peristaltic pumps</a>, a fresh media feed pump and a waste removal pump. The pumps are powered by a dedicated <a href="https://www.amazon.co.uk/dp/B0CGR54L81">6A power supply</a> and connected through a <a href="https://thepihut.com/products/ethernet-hub-and-usb-hub-w-micro-usb-otg-connector?variant=27740258513">USB-C hub</a> for the Pi5 or a <a href="https://thepihut.com/products/usb-mini-hub-with-power-switch-otg-micro-usb?variant=27740257873">USB-micro Hub</a> for a PiZero to <a href="https://www.pololu.com/product/3130">Pololu Tic</a> stepper motor controllers. The pumps are connected by luer lock adapters to stainless steel syringe needles in custom <a href="https://labcrafter.co.uk/products/40ml-glass-vial-cap-s-with-ports-and-stir-bar">3D printed caps</a>. Pumps are connected to media feed bottle using these <a href="https://pioreactor.com/collections/accessories-and-parts/products/gl45-cap-with-luer-lock-connectors?variant=46788561403960">custom printed lids</a> with the 14 inch tubing option.</p>
+</section>
+<section id="kalman-filter-based-turbidostat-mode" class="level1">
+<h1>Kalman Filter Based Turbidostat Mode</h1>
+<p>The turbidostat is driven by an extended Kalman filter (EKF) that tracks two hidden states — the optical density <img src="https://latex.codecogs.com/png.latex?%5Cmathrm%7BOD%7D_k"> of the culture and a per-cycle multiplicative growth rate <img src="https://latex.codecogs.com/png.latex?r_k"> — from the noisy photodiode voltage measured each cycle. The state transition is multiplicative, <img src="https://latex.codecogs.com/png.latex?%5Cmathrm%7BOD%7D_%7Bk+1%7D%20=%20r_k%5C,%5Cmathrm%7BOD%7D_k"> with <img src="https://latex.codecogs.com/png.latex?r_%7Bk+1%7D=r_k">, which the filter linearises through the Jacobian <img src="https://latex.codecogs.com/png.latex?F%20=%20%5Cbegin%7Bpmatrix%7D%20r%20&amp;%20%5Cmathrm%7BOD%7D%20%5C%5C%200%20&amp;%201%20%5Cend%7Bpmatrix%7D."> The measurement model observes OD directly (<img src="https://latex.codecogs.com/png.latex?H=%5B1,%5C,0%5D">), so the growth rate is inferred only through the predicted and measured OD. From the updated rate estimate the doubling time is reported as <img src="https://latex.codecogs.com/png.latex?T_d%20=%20%5CDelta%20t%20%5C,%5Cln%202%20/%20%5Cln%20r">, with its uncertainty propagated from the corresponding entry of the covariance matrix. The full implementation lives in <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/src/utils.py"><code>turbidostat_ekf_mode</code></a> in <code>src/utils.py</code>; when no active turbidostat job is running the same predict/update step is run passively each time the sensors are logged, so that growth rate is always available in the CSV output.</p>
+<p>The filter follows the design in <span class="citation" data-cites="Hoffmann2017-po">&nbsp;[1]</span>, including their treatment of dilution events. Each pump firing causes a step drop in OD that the multiplicative process model cannot account for, and if left untreated this drives spurious corrections into the growth-rate estimate. Instead, the moment a pump fires the OD prediction is reset to the raw measurement, the OD variance is inflated to a “distrust” value (10× the measurement noise by default), and the off-diagonal covariance terms are zeroed so that the dilution transient cannot leak into <img src="https://latex.codecogs.com/png.latex?r">. The filter then re-converges over the next ten cycles. A second guard rejects single-sample sensor glitches: if an innovation exceeds five standard deviations the off-diagonal terms are again zeroed and the OD variance is reset to the squared residual, which prevents a stray reading from poisoning the growth-rate estimate.</p>
+<p>The turbidostat job itself is scheduled like any other periodic task on the bioreactor (typically every 10 s). Each cycle reads the most recent OD from the live CSV, runs the EKF update, and — if the filtered OD estimate has crossed the user-supplied setpoint — fires the inflow pump for a fixed duration and the outflow pump for 1.1× that duration via <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/src/utils.py"><code>independent_flow</code></a>. The filter is initialised from the first valid OD reading with <img src="https://latex.codecogs.com/png.latex?r_0%20=%201"> (no growth), and the measurement noise <img src="https://latex.codecogs.com/png.latex?R">, growth-rate process noise <img src="https://latex.codecogs.com/png.latex?Q_r">, pump-distrust covariance and distrust-cycle count are all exposed as job arguments. To make tuning these tractable, the <a href="https://github.com/livingphysics/bioreactor_v3/blob/main/hardware_testing/ekf_tuning_gui.py"><code>ekf_tuning_gui.py</code></a> tool replays a historical run through the same filter code with log-scale sliders for each parameter, so the effect of a change on the OD estimate, growth rate and doubling time can be seen immediately against real data.</p>
+<p>The figure below replays a ~9 hour turbidostat run for a yeast culture in which the temperature setpoint was stepped through three values, applying the same EKF used online. The raw photodiode trace shows the characteristic sawtooth of dilution events, the filtered OD tracks through them via the pump-distrust mechanism, and the inferred doubling time settles to a different steady value at each temperature plateau. This is able to resolve at leas 20 minute <img src="https://latex.codecogs.com/png.latex?%5Capprox%2010%5C%25"> differences in generation time for the yeast culture.</p>
+<div id="cell-fig-ekf-replay" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb2-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb2-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb2-4"></span>
+<span id="cb2-5">CSV_URL <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://raw.githubusercontent.com/livingphysics/bioreactor_v3/"</span></span>
+<span id="cb2-6">           <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"main/src/bioreactor_data/bioreactor_data.csv"</span>)</span>
+<span id="cb2-7">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(CSV_URL)</span>
+<span id="cb2-8"></span>
+<span id="cb2-9">times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'elapsed_time'</span>].values.astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb2-10">measurements <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Eyespy_sct_V'</span>].values.astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb2-11">pump_cum <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pump_inflow_time_s'</span>].values.astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb2-12">pump_events <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.zeros(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(times), dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span>)</span>
+<span id="cb2-13">pump_events[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>:] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.diff(pump_cum) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb2-14"></span>
+<span id="cb2-15"></span>
+<span id="cb2-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> run_ekf_replay(times, measurements, pump_events,</span>
+<span id="cb2-17">                   R<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span>, Q_growth_rate<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5e-12</span>,</span>
+<span id="cb2-18">                   initial_growth_rate<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, initial_P_r<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0005</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,</span>
+<span id="cb2-19">                   pump_distrust_cycles<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, pump_distrust_P_od<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>):</span>
+<span id="cb2-20">    n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(times)</span>
+<span id="cb2-21">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> pump_distrust_P_od <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb2-22">        pump_distrust_P_od <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10.0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> R</span>
+<span id="cb2-23">    od_est <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(n, np.nan)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> growth_rate <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(n, np.nan)</span>
+<span id="cb2-24">    doubling_time_s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(n, np.nan)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> od_std <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(n, np.nan)</span>
+<span id="cb2-25">    r_std <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(n, np.nan)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> dt_std <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(n, np.nan)</span>
+<span id="cb2-26"></span>
+<span id="cb2-27">    x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([measurements[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], initial_growth_rate])</span>
+<span id="cb2-28">    P <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([[R, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>], [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, initial_P_r]])</span>
+<span id="cb2-29">    distrust_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb2-30">    last_time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> times[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb2-31">    dt_median <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.median(np.diff(times))</span>
+<span id="cb2-32">    od_est[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> growth_rate[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb2-33">    od_std[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.sqrt(R)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> r_std[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.sqrt(initial_P_r)</span>
+<span id="cb2-34">    I2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.eye(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> H_vec <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>])</span>
+<span id="cb2-35"></span>
+<span id="cb2-36">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, n):</span>
+<span id="cb2-37">        z_k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> measurements[i]</span>
+<span id="cb2-38">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> np.isnan(z_k):</span>
+<span id="cb2-39">            od_est[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> od_est[i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> growth_rate[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> growth_rate[i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb2-40">            doubling_time_s[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> doubling_time_s[i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb2-41">            od_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> od_std[i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> r_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> r_std[i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> dt_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dt_std[i<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb2-42">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb2-43">        last_time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> times[i]</span>
+<span id="cb2-44">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> pump_events[i]:</span>
+<span id="cb2-45">            distrust_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pump_distrust_cycles</span>
+<span id="cb2-46"></span>
+<span id="cb2-47">        od_k, r_k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x</span>
+<span id="cb2-48">        x_pred <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([od_k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> r_k, r_k])</span>
+<span id="cb2-49">        F <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([[r_k, od_k], [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>]])</span>
+<span id="cb2-50">        Q_mat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([[<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>], [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, Q_growth_rate]])</span>
+<span id="cb2-51">        P_pred <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> F <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> P <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> F.T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> Q_mat</span>
+<span id="cb2-52"></span>
+<span id="cb2-53">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> pump_events[i] <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> distrust_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>:</span>
+<span id="cb2-54">            P_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pump_distrust_P_od</span>
+<span id="cb2-55">            P_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> P_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span></span>
+<span id="cb2-56">            x_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> z_k</span>
+<span id="cb2-57">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> pump_events[i]:</span>
+<span id="cb2-58">                distrust_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb2-59"></span>
+<span id="cb2-60">        y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> z_k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb2-61">        S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> P_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> R</span>
+<span id="cb2-62">        K <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> P_pred[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> S</span>
+<span id="cb2-63">        x_updated <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x_pred <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> K <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> y</span>
+<span id="cb2-64">        P_updated <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (I2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> np.outer(K, H_vec)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> P_pred</span>
+<span id="cb2-65"></span>
+<span id="cb2-66">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">abs</span>(z_k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5.0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.sqrt(R):</span>
+<span id="cb2-67">            P_updated[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> P_updated[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span></span>
+<span id="cb2-68">            P_updated[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (x_updated[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> z_k) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb2-69"></span>
+<span id="cb2-70">        x, P <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x_updated, P_updated</span>
+<span id="cb2-71">        od_est[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> growth_rate[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb2-72">        od_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.sqrt(P[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>])<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> r_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.sqrt(P[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])</span>
+<span id="cb2-73"></span>
+<span id="cb2-74">        r_est <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb2-75">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> r_est <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>:</span>
+<span id="cb2-76">            ln_r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.log(r_est)</span>
+<span id="cb2-77">            dt_val <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dt_median <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.log(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> ln_r</span>
+<span id="cb2-78">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> dt_val <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">86400.0</span>:</span>
+<span id="cb2-79">                doubling_time_s[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dt_val</span>
+<span id="cb2-80">                dt_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dt_median <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.log(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> r_std[i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (r_est <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> ln_r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb2-81"></span>
+<span id="cb2-82">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>(od_est<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>od_est, growth_rate<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>growth_rate,</span>
+<span id="cb2-83">                doubling_time_s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>doubling_time_s,</span>
+<span id="cb2-84">                od_std<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>od_std, r_std<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>r_std, dt_std<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>dt_std)</span>
+<span id="cb2-85"></span>
+<span id="cb2-86"></span>
+<span id="cb2-87">result <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> run_ekf_replay(times, measurements, pump_events, Q_growth_rate<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5e-12</span>)</span>
+<span id="cb2-88"></span>
+<span id="cb2-89">t_h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3600.0</span></span>
+<span id="cb2-90">mask <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t_h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9.0</span></span>
+<span id="cb2-91">t_h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t_h[mask]</span>
+<span id="cb2-92">raw_od <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> measurements[mask]</span>
+<span id="cb2-93">ekf_od <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> result[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'od_est'</span>][mask]</span>
+<span id="cb2-94">od_sd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> result[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'od_std'</span>][mask]</span>
+<span id="cb2-95">dt_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> result[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'doubling_time_s'</span>][mask] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60.0</span></span>
+<span id="cb2-96">dt_sd_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> result[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'dt_std'</span>][mask] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60.0</span></span>
+<span id="cb2-97">temp <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'temperature_C'</span>].values.astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)[mask]</span>
+<span id="cb2-98">pump_times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t_h[pump_events[mask]]</span>
+<span id="cb2-99"></span>
+<span id="cb2-100">fig, (ax_od, ax_dt, ax_temp) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7.5</span>), sharex<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-101">fig.subplots_adjust(hspace<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.12</span>)</span>
+<span id="cb2-102"></span>
+<span id="cb2-103">ax_od.plot(t_h, raw_od, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'.'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#cccccc'</span>, markersize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Raw OD'</span>, zorder<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-104">ax_od.plot(t_h, ekf_od, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#2196F3'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'EKF OD est'</span>, zorder<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span>
+<span id="cb2-105">ax_od.fill_between(t_h, ekf_od <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> od_sd, ekf_od <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> od_sd, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#2196F3'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.15</span>, zorder<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb2-106"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pt <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> pump_times:</span>
+<span id="cb2-107">    ax_od.axvline(pt, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#FF5722'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>)</span>
+<span id="cb2-108">ax_od.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'OD (V)'</span>)</span>
+<span id="cb2-109">ax_od.legend(loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'upper left'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>)</span>
+<span id="cb2-110">ax_od.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb2-111"></span>
+<span id="cb2-112">dt_upper <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.where(np.isfinite(dt_min) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> np.isfinite(dt_sd_min), dt_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> dt_sd_min, np.nan)</span>
+<span id="cb2-113">dt_lower <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.where(np.isfinite(dt_min) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> np.isfinite(dt_sd_min),</span>
+<span id="cb2-114">                    np.maximum(dt_min <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> dt_sd_min, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>), np.nan)</span>
+<span id="cb2-115">ax_dt.plot(t_h, dt_min, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#9C27B0'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Doubling time'</span>)</span>
+<span id="cb2-116">ax_dt.fill_between(t_h, dt_lower, dt_upper, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#9C27B0'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.15</span>)</span>
+<span id="cb2-117"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pt <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> pump_times:</span>
+<span id="cb2-118">    ax_dt.axvline(pt, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#FF5722'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>)</span>
+<span id="cb2-119">finite_vals <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dt_min[np.isfinite(dt_min)]</span>
+<span id="cb2-120"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(finite_vals):</span>
+<span id="cb2-121">    p5, p95 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.percentile(finite_vals, [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">95</span>])</span>
+<span id="cb2-122">    margin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (p95 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> p5) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.15</span></span>
+<span id="cb2-123">    ax_dt.set_ylim(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, p5 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> margin), p95 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> margin)</span>
+<span id="cb2-124">ax_dt.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Doubling time (min)'</span>)</span>
+<span id="cb2-125">ax_dt.legend(loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'upper left'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>)</span>
+<span id="cb2-126">ax_dt.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb2-127"></span>
+<span id="cb2-128">ax_temp.plot(t_h, temp, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#E65100'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Temperature'</span>)</span>
+<span id="cb2-129">ax_temp.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Temperature (°C)'</span>)</span>
+<span id="cb2-130">ax_temp.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Elapsed time (hours)'</span>)</span>
+<span id="cb2-131">ax_temp.legend(loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'upper left'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>)</span>
+<span id="cb2-132">ax_temp.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb2-133">plt.show()</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-ekf-replay" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ekf-replay-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://notes.livingphysics.org/build_posts/gen3_reactor_build/index_files/figure-html/fig-ekf-replay-output-1.png" width="891" height="614" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ekf-replay-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: EKF replay of a 9-hour turbidostat run stepping through three temperatures. Top: raw OD voltage (grey) with EKF estimate (blue, ±1σ band) and pump events (orange ticks). Middle: inferred doubling time. Bottom: temperature setpoint trace.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="minor-improvements" class="level1">
+<h1>Minor improvements</h1>
+<p>Similar to the <img src="https://latex.codecogs.com/png.latex?1k%5COmega"> pull-down resistor for the Femtobuck control pin, a <img src="https://latex.codecogs.com/png.latex?1k%5COmega"> pull-down resistor was also added to the fan control PWM pin.</p>
+</section>
+<section id="detailed-assembly-instructions" class="level1">
+<h1>Detailed Assembly Instructions</h1>
+<ol type="1">
+<li>Tap 4 corner holes on both sides fo the <a href="">aluminium vial heat block</a> using an M3 tap.</li>
+<li>Connect the Peltier element red-wire to V+ and the black-wire to Gnd. Feel which side gets cold, this is usually the printed side. Attach this side to te aluminium block using thermally conductive double-sided tape (or another conductive adhesive)</li>
+<li>Connect the other side of the Peltier in the same manner to the aluminum heat-sink fan combination.</li>
+<li>Connect 8 M3x8mm screws with hex-nuts through the holes in the Noctua fan. The hex-nuts should be on the top and bottom sides of the fan. Connect the Open-beam 15x15 construction rail to the fan with the fan cable coming out the front fo the construct, the 60mm rail on top and (open side) and the 90mm rail on the bottom.</li>
+<li>Affix the magnets to the fan with 3M adhesive tape.</li>
+<li>Half screw 4 M3x6mm screws into the bottom the of the aluminium vial heat block and slide it onto the top (60mm) construction rail.</li>
+<li>Affix the Cytron motor driver to the heat-sink fan using 3M double sided adhesive with the screw terminals to the right side. Attach the red peltier wire to the ma terminal and the black to the mb terminal.</li>
+<li>Attach the Pioreactor sleeve to the custom adaptor and then attach the adaptor to the aluminium block with 4 m3x4mm screws ensuring the LED and PD holes are to the left side.</li>
+<li>Remove the male connector cable from the ring light with snips. Thread the female end connector through the hole in the custom acrylic holder. Affix the spacers on either side of the ring light and then affix the final piece on the top. Slide this into the slot between the upper construction rails. Solder the male connector leads to Red:5V, Black:Ground, and Blue:MOSI pin on the Pi.</li>
+<li>Solder the 40 pin connector to the perma-proto board with the notch on the left side</li>
+<li>Solder 6 pin connectors and headers for the ADS1115 ADC, and a 4-pin header with the top 2 pins overlapping pins 20 and 21 of the Raspberry Pi, and connect, the fourth pin to ground.</li>
+<li>Connect the control pin to pin 25 of the Raspberry Pi and also to ground via a 1kOhm resistor. Connect VIN:12V and PGND:Ground.</li>
+<li>Solder SDA and SCL pins from the Pi and the ADS1115 together, and solder Vin:5v and Gnd:Ground.</li>
+<li>Solder 2 4-pin male headers for the fan control and thermistor. Connect Pin 1 (blue) to ground and to pin 12 on the Pi.</li>
+<li>Solder the V+ terminal of the DS18B20 (3) to the yellow wire of the spare extension cable from the fan with the female header cut off. Solder th ground pin (1) to the black wire, and the signal pin (2) to the blue wire.</li>
+</ol>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0">
+<div id="ref-Hoffmann2017-po" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">S. A. Hoffmann, C. Wohltat, K. M. Müller, and K. M. Arndt, <em>A User-Friendly, Low-Cost Turbidostat with Versatile Growth Rate Estimation Based on an Extended Kalman Filter</em>, PLoS One <strong>12</strong>, e0181923 (2017).</div>
+</div>
+</div></section></div> ]]></description>
+  <category>Builds</category>
+  <category>Bioreactor</category>
+  <guid>https://notes.livingphysics.org/build_posts/gen3_reactor_build/</guid>
+  <pubDate>Wed, 15 Apr 2026 23:00:00 GMT</pubDate>
+  <media:content url="https://notes.livingphysics.org/build_posts/gen3_reactor_build/images/bioreactor_v3.png" medium="image" type="image/png" height="108" width="144"/>
+</item>
 <item>
   <title>Second Generation Bioreactor Build</title>
   <dc:creator>David Jordan</dc:creator>
@@ -99,7 +1607,7 @@ The chemostat is designed so that the parameters of the culture (like growth rat
 <section id="temperature-control" class="level2">
 <h2 class="anchored" data-anchor-id="temperature-control">Temperature Control</h2>
 <p>Temperature control data can be pulled directly from the GitHub repository and plotted in-line with Quarto and Python. Here we show the temperature difference</p>
-<div id="723bd01f" class="cell" data-execution_count="1">
+<div id="3ffb6195" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;

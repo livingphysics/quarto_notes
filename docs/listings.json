@@ -13,6 +13,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/build_posts/gen3_reactor_build/index.html",
       "/results_posts/cell_learning_2509/cell_learning_2509.html",
       "/build_posts/gen2_reactor/index.html",
       "/build_posts/gal-his_yeast_build/index.html",
@@ -31,6 +32,7 @@
   {
     "listing": "/builds.html",
     "items": [
+      "/build_posts/gen3_reactor_build/index.html",
       "/build_posts/gen2_reactor/index.html",
       "/build_posts/gal-his_yeast_build/index.html",
       "/build_posts/gen1_reactor_update_01/index.html",
